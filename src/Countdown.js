@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 const Countdown = ({ date }) => {
   const [{ days, hours, minutes, seconds }, setTime] = useState({})
+  const [isBirthday, setBirthday] = useState(false)
   const timeOffsetMoscow = 3
   
   useEffect(() => {
@@ -10,6 +11,10 @@ const Countdown = ({ date }) => {
         const chosenDate = new Date(date)
         const currentDate = new Date()
         const delta = chosenDate.getTime() - currentDate.getTime()
+
+        if (delta - timeOffsetMoscow * 60 * 60 * 1000 <= 0) setBirthday(true)
+
+        console.log(delta - timeOffsetMoscow * 60 * 60 * 1000)
 
         const time = {
           days: Math.floor(delta / (1000 * 60 * 60 * 24)),
@@ -25,12 +30,18 @@ const Countdown = ({ date }) => {
     return () => clearInterval(intervalID)
   }, [date])
 
+  if (isBirthday) return (
+    <div className="countdown">
+      <span>Happy Birthday, Artyom!</span>
+    </div>
+  )
+
   return (
     <div className="countdown">
       { days === 1 ? <span>{days} day</span> : days > 1 ? <span>{days} days</span> : null}
       
       <span>
-        { hours < 10 ? <>0{hours}</> : <>{hours}</> }:
+        { hours < 0 ? <>0{hours+timeOffsetMoscow}</> : hours < 10 ? <>0{hours}</> : <>00</>}:
         { minutes < 10 ? <>0{minutes}</> : <>{minutes}</> }:
         { seconds < 10 ? <>0{seconds}</> : <>{seconds}</> }
       </span>
